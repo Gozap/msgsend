@@ -5,6 +5,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gozap/msgsend/pkg/conf"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/spf13/viper"
@@ -13,11 +15,6 @@ import (
 
 type Telegram struct {
 	bot *tb.Bot
-}
-
-type TGRecipient struct {
-	ID   int64
-	Type string
 }
 
 func NewTelegram() (*Telegram, error) {
@@ -33,8 +30,43 @@ func NewTelegram() (*Telegram, error) {
 	}
 }
 
-func (tg *Telegram) SendMessage(msg string, recipient []TGRecipient) error {
+func (tg *Telegram) SendMessage(msg string, recipient []conf.TGRecipient) error {
 
+	send := func(to tb.Recipient) {
+		_, err := tg.bot.Send(to, msg)
+		if err != nil {
+			logrus.Error(err)
+		}
+	}
+
+	return tg.batchSend(send, recipient)
+}
+
+func (tg *Telegram) SendFile(filePath string, recipient []conf.TGRecipient) error {
+
+	send := func(to tb.Recipient) {
+		_, err := tg.bot.Send(to, &tb.Document{File: tb.FromDisk(filePath)})
+		if err != nil {
+			logrus.Error(err)
+		}
+	}
+
+	return tg.batchSend(send, recipient)
+}
+
+func (tg *Telegram) SendImage(imagePath string, recipient []conf.TGRecipient) error {
+
+	send := func(to tb.Recipient) {
+		_, err := tg.bot.Send(to, &tb.Photo{File: tb.FromDisk(imagePath)})
+		if err != nil {
+			logrus.Error(err)
+		}
+	}
+
+	return tg.batchSend(send, recipient)
+}
+
+func (tg *Telegram) batchSend(send func(to tb.Recipient), recipient []conf.TGRecipient) error {
 	if len(recipient) == 0 {
 		err := viper.UnmarshalKey("telegram.recipient", &recipient)
 		if err != nil {
@@ -57,14 +89,10 @@ func (tg *Telegram) SendMessage(msg string, recipient []TGRecipient) error {
 		}
 		go func() {
 			defer wg.Done()
-			_, err := tg.bot.Send(to, msg)
-			if err != nil {
-				logrus.Error(err)
-			}
+			send(to)
 		}()
 	}
 
 	wg.Wait()
-
 	return nil
 }

@@ -4,6 +4,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/gozap/msgsend/pkg/conf"
+
 	"github.com/spf13/viper"
 )
 
@@ -26,7 +28,7 @@ func TestTelegram_SendMessage(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = bot.SendMessage("Hello World", []TGRecipient{
+	err = bot.SendMessage("Hello World", []conf.TGRecipient{
 		{
 			ID:   111111111,
 			Type: "user",
