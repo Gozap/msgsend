@@ -42,10 +42,15 @@ func (tg *Telegram) SendMessage(msg string, recipient []conf.TGRecipient) error 
 	return tg.batchSend(send, recipient)
 }
 
-func (tg *Telegram) SendFile(filePath string, recipient []conf.TGRecipient) error {
+func (tg *Telegram) SendFile(filePath, fileName, mime, caption string, recipient []conf.TGRecipient) error {
 
 	send := func(to tb.Recipient) {
-		_, err := tg.bot.Send(to, &tb.Document{File: tb.FromDisk(filePath)})
+		_, err := tg.bot.Send(to, &tb.Document{
+			File:     tb.FromDisk(filePath),
+			Caption:  caption,
+			MIME:     mime,
+			FileName: fileName,
+		})
 		if err != nil {
 			logrus.Error(err)
 		}
@@ -54,10 +59,13 @@ func (tg *Telegram) SendFile(filePath string, recipient []conf.TGRecipient) erro
 	return tg.batchSend(send, recipient)
 }
 
-func (tg *Telegram) SendImage(imagePath string, recipient []conf.TGRecipient) error {
+func (tg *Telegram) SendImage(imagePath, caption string, recipient []conf.TGRecipient) error {
 
 	send := func(to tb.Recipient) {
-		_, err := tg.bot.Send(to, &tb.Photo{File: tb.FromDisk(imagePath)})
+		_, err := tg.bot.Send(to, &tb.Photo{
+			File:    tb.FromDisk(imagePath),
+			Caption: caption,
+		})
 		if err != nil {
 			logrus.Error(err)
 		}

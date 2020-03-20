@@ -14,7 +14,7 @@ var debug bool
 var rootCmd = &cobra.Command{
 	Use:   "msgsend",
 	Short: "Message send tool",
-	Run:   func(cmd *cobra.Command, args []string) {},
+	Run:   func(cmd *cobra.Command, args []string) { _ = cmd.Help() },
 }
 
 func Execute() {
@@ -24,9 +24,9 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "msgsend.yaml", "config file (default is ./msgsend.yaml)")
-	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "debug mod")
+	cobra.OnInitialize(initConfig, initLog)
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "/etc/msgsend.yaml", "config file (default is /etc/msgsend.yaml)")
+	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "debug mode")
 }
 
 func initConfig() {
@@ -37,4 +37,11 @@ func initConfig() {
 		logrus.Fatal(err)
 	}
 	logrus.Debug("Using config file:", viper.ConfigFileUsed())
+}
+
+func initLog() {
+	logrus.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp:   true,
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
 }
