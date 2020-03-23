@@ -15,8 +15,9 @@ import (
 var txtFile string
 
 var txtCmd = &cobra.Command{
-	Use:   "txt",
-	Short: "A brief description of your command",
+	Use:    "txt",
+	Short:  "A brief description of your command",
+	PreRun: func(_ *cobra.Command, _ []string) { initConfig() },
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var msg string

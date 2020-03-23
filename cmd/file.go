@@ -15,8 +15,9 @@ var mime string
 var caption string
 
 var fileCmd = &cobra.Command{
-	Use:   "file",
-	Short: "A brief description of your command",
+	Use:    "file",
+	Short:  "A brief description of your command",
+	PreRun: func(_ *cobra.Command, _ []string) { initConfig() },
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			_ = cmd.Help()

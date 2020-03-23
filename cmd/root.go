@@ -24,7 +24,7 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig, initLog)
+	cobra.OnInitialize(initLog)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "/etc/msgsend.yaml", "config file (default is /etc/msgsend.yaml)")
 	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "debug mode")
 }
