@@ -11,8 +11,8 @@ import (
 )
 
 func initConfig() {
-	viper.Set("telegram.api", os.Getenv("telegram_api"))
-	viper.Set("telegram.token", os.Getenv("telegram_token"))
+	viper.Set("telegram.api", os.Getenv("TELEGRAM_API"))
+	viper.Set("telegram.token", os.Getenv("TELEGRAM_TOKEN"))
 }
 
 func TestNewTelegram(t *testing.T) {
@@ -92,4 +92,15 @@ func TestTelegram_SendImage(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestTelegram_ID(t *testing.T) {
+	initConfig()
+	bot, err := NewTelegram()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	bot.ID()
+	bot.Start()
 }

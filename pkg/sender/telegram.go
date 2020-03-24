@@ -2,6 +2,7 @@ package sender
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -103,4 +104,23 @@ func (tg *Telegram) batchSend(send func(to tb.Recipient), recipient []conf.TGRec
 
 	wg.Wait()
 	return nil
+}
+
+func (tg *Telegram) ID() {
+	tg.bot.Handle("/id", func(m *tb.Message) {
+		var r tb.Recipient
+		if m.Chat != nil {
+			r = m.Chat
+		} else {
+			r = m.Sender
+		}
+		_, err := tg.bot.Send(r, fmt.Sprintln(m.ID))
+		if err != nil {
+			logrus.Error(err)
+		}
+	})
+}
+
+func (tg *Telegram) Start() {
+	tg.bot.Start()
 }
