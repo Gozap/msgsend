@@ -31,10 +31,15 @@ func NewTelegram() (*Telegram, error) {
 	}
 }
 
-func (tg *Telegram) SendMessage(msg string, recipient []conf.TGRecipient) error {
+func (tg *Telegram) SendMessage(msg string, recipient []conf.TGRecipient, markdown bool) error {
+
+	opt := &tb.SendOptions{}
+	if markdown {
+		opt.ParseMode = tb.ModeMarkdown
+	}
 
 	send := func(to tb.Recipient) {
-		_, err := tg.bot.Send(to, msg)
+		_, err := tg.bot.Send(to, msg, opt)
 		if err != nil {
 			logrus.Error(err)
 		}

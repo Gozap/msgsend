@@ -29,9 +29,9 @@ func TestTelegram_SendMessage(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	userID, _ := strconv.Atoi(os.Getenv("telegram_user"))
-	groupID, _ := strconv.Atoi(os.Getenv("telegram_group"))
-	err = bot.SendMessage("Hello World", []conf.TGRecipient{
+	userID, _ := strconv.Atoi(os.Getenv("TELEGRAM_USER"))
+	groupID, _ := strconv.Atoi(os.Getenv("TELEGRAM_GROUP"))
+	err = bot.SendMessage("`Hello World`", []conf.TGRecipient{
 		{
 			ID:   int64(userID),
 			Type: "user",
@@ -40,7 +40,7 @@ func TestTelegram_SendMessage(t *testing.T) {
 			ID:   int64(groupID),
 			Type: "group",
 		},
-	})
+	}, true)
 	if err != nil {
 		t.Fatal(err)
 	}

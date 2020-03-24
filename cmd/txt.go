@@ -13,6 +13,7 @@ import (
 )
 
 var txtFile string
+var markdown bool
 
 var txtCmd = &cobra.Command{
 	Use:    "txt",
@@ -45,7 +46,7 @@ var txtCmd = &cobra.Command{
 			logrus.Fatal(err)
 		}
 
-		err = bot.SendMessage(msg, to)
+		err = bot.SendMessage(msg, to, markdown)
 		if err != nil {
 			logrus.Fatal(err)
 		}
@@ -54,5 +55,6 @@ var txtCmd = &cobra.Command{
 
 func init() {
 	txtCmd.PersistentFlags().StringVarP(&txtFile, "file", "f", "", "text message file")
+	txtCmd.PersistentFlags().BoolVarP(&markdown, "markdown", "m", true, "use markdown mode")
 	rootCmd.AddCommand(txtCmd)
 }
